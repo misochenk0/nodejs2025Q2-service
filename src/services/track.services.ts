@@ -39,6 +39,20 @@ export class TrackService {
     return newTrack;
   }
 
+  deleteAlbumId(albumId: string): void {
+    this.tracks = this.tracks.map((track: Track): Track => ({
+      ...track,
+      albumId: track.albumId === albumId ? null : track.albumId,
+    }));
+  }
+
+  deleteArtistId(artistId: string): void {
+    this.tracks = this.tracks.map((track: Track): Track => ({
+      ...track,
+      artistId: track.artistId === artistId ? null : track.artistId,
+    }));
+  }
+
   update(id: string, body: TrackDto): Track {
     this.tracks = this.tracks.map((track: Track): Track => id === track.id ? {...track, ...body} : track);
     return this.findOne(id);
