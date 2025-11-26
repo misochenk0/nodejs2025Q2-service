@@ -24,6 +24,12 @@ nvm use 22.21.1
 npm install
 ```
 
+## COPY ENV FILE
+
+```
+cp .env.example .env
+```
+
 ## Running application
 
 ```
