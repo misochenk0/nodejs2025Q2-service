@@ -7,10 +7,12 @@ import { AlbumsService } from './services/albums.services';
 import { AlbumsController } from './controllers/albums.controller';
 import { ArtistServices } from './services/artist.services';
 import { ArtistController } from './controllers/artist.controller';
+import { FavouriteService } from './services/favourite.services';
+import { FavouriteController } from './controllers/favourite.controller';
 
 @Module({
   imports: [],
-  controllers: [UsersController, TrackController, AlbumsController, ArtistController],
-  providers: [UsersService, TrackService, AlbumsService, ArtistServices],
+  controllers: [UsersController, TrackController, AlbumsController, ArtistController, FavouriteController],
+  providers: [UsersService, TrackService, AlbumsService, ArtistServices, FavouriteService],
 })
 export class AppModule {}
