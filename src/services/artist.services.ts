@@ -10,11 +10,10 @@ export class ArtistServices {
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
     @Inject(forwardRef(() => AlbumsService))
-    private albumsService: AlbumsService
+    private albumsService: AlbumsService,
   ) {}
 
   private artists: Artist[] = [];
-
 
   private validateId(id: string): boolean {
     return validate(id) && version(id) === 4;
@@ -47,14 +46,19 @@ export class ArtistServices {
   }
 
   update(id: string, body: ArtistDto): Artist {
-    this.artists = this.artists.map((artist: Artist): Artist => id === artist.id ? {...artist, ...body} : artist);
+    this.artists = this.artists.map(
+      (artist: Artist): Artist =>
+        id === artist.id ? { ...artist, ...body } : artist,
+    );
     return this.findOne(id);
   }
 
   delete(id: string): void {
-    this.artists = this.artists.filter((artist: Artist): boolean => artist.id !== id);
+    this.artists = this.artists.filter(
+      (artist: Artist): boolean => artist.id !== id,
+    );
 
-    this.trackService.deleteArtistId(id)
-    this.albumsService.deleteArtistId(id)
+    this.trackService.deleteArtistId(id);
+    this.albumsService.deleteArtistId(id);
   }
 }

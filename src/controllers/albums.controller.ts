@@ -14,14 +14,13 @@ import { AlbumsService } from '../services/albums.services';
 import { Album, AlbumDto } from '../types/albums.types';
 import { Response } from 'express';
 
-
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
   getAlbum(): Album[] {
-    return this.albumsService.findAll()
+    return this.albumsService.findAll();
   }
 
   @Get(':id')
@@ -46,7 +45,9 @@ export class AlbumsController {
   createAlbum(@Body() body: AlbumDto): Album {
     const { name, year, artistId } = body;
 
-    const isValidArtistId = artistId ? this.albumsService.isValidId(artistId) : true;
+    const isValidArtistId = artistId
+      ? this.albumsService.isValidId(artistId)
+      : true;
 
     if (!name || !year) {
       throw new HttpException(
@@ -59,7 +60,7 @@ export class AlbumsController {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
-      )
+      );
     }
 
     return this.albumsService.create(body);
@@ -83,7 +84,9 @@ export class AlbumsController {
 
     const { name, year, artistId } = body;
 
-    const isValidArtistId: boolean = artistId ? this.albumsService.isValidId(artistId) : true;
+    const isValidArtistId: boolean = artistId
+      ? this.albumsService.isValidId(artistId)
+      : true;
 
     if (!name || !year) {
       throw new HttpException(
@@ -96,7 +99,7 @@ export class AlbumsController {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
-      )
+      );
     }
 
     return this.albumsService.update(id, body);
@@ -120,6 +123,6 @@ export class AlbumsController {
 
     this.albumsService.delete(id);
 
-    return res.sendStatus(HttpStatus.NO_CONTENT)
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 }

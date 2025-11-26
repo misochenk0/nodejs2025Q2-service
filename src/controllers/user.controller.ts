@@ -66,7 +66,7 @@ export class UsersController {
       );
     }
 
-    return this.usersService.update(id, body)
+    return this.usersService.update(id, body);
   }
 
   @Get(':id')
@@ -107,6 +107,6 @@ export class UsersController {
 
     this.usersService.delete(id);
 
-    return res.sendStatus(HttpStatus.NO_CONTENT)
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 }

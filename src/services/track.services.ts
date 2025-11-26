@@ -6,7 +6,6 @@ import { v4, validate, version } from 'uuid';
 export class TrackService {
   private tracks: Track[] = [];
 
-
   private validateId(id: string): boolean {
     return validate(id) && version(id) === 4;
   }
@@ -40,25 +39,34 @@ export class TrackService {
   }
 
   deleteAlbumId(albumId: string): void {
-    this.tracks = this.tracks.map((track: Track): Track => ({
-      ...track,
-      albumId: track.albumId === albumId ? null : track.albumId,
-    }));
+    this.tracks = this.tracks.map(
+      (track: Track): Track => ({
+        ...track,
+        albumId: track.albumId === albumId ? null : track.albumId,
+      }),
+    );
   }
 
   deleteArtistId(artistId: string): void {
-    this.tracks = this.tracks.map((track: Track): Track => ({
-      ...track,
-      artistId: track.artistId === artistId ? null : track.artistId,
-    }));
+    this.tracks = this.tracks.map(
+      (track: Track): Track => ({
+        ...track,
+        artistId: track.artistId === artistId ? null : track.artistId,
+      }),
+    );
   }
 
   update(id: string, body: TrackDto): Track {
-    this.tracks = this.tracks.map((track: Track): Track => id === track.id ? {...track, ...body} : track);
+    this.tracks = this.tracks.map(
+      (track: Track): Track =>
+        id === track.id ? { ...track, ...body } : track,
+    );
     return this.findOne(id);
   }
 
   delete(id: string): void {
-    this.tracks = this.tracks.filter((track: Track): boolean => track.id !== id);
+    this.tracks = this.tracks.filter(
+      (track: Track): boolean => track.id !== id,
+    );
   }
 }

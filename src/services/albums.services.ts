@@ -5,14 +5,12 @@ import { TrackService } from './track.services';
 
 @Injectable()
 export class AlbumsService {
-
   constructor(
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
   ) {}
 
   private albums: Album[] = [];
-
 
   private validateId(id: string): boolean {
     return validate(id) && version(id) === 4;
@@ -42,21 +40,28 @@ export class AlbumsService {
   }
 
   update(id: string, body: AlbumDto): Album {
-    this.albums = this.albums.map((album: Album): Album => id === album.id ? {...album, ...body} : album);
+    this.albums = this.albums.map(
+      (album: Album): Album =>
+        id === album.id ? { ...album, ...body } : album,
+    );
     return this.findOne(id);
   }
 
   delete(id: string): void {
-    this.albums = this.albums.filter((album: Album): boolean => album.id !== id);
+    this.albums = this.albums.filter(
+      (album: Album): boolean => album.id !== id,
+    );
 
     this.trackService.deleteAlbumId(id);
   }
 
   deleteArtistId(artistId: string): void {
-    this.albums = this.albums.map((album: Album): Album => ({
-      ...album,
-      artistId: album.artistId === artistId ? null : album.artistId,
-    }));
+    this.albums = this.albums.map(
+      (album: Album): Album => ({
+        ...album,
+        artistId: album.artistId === artistId ? null : album.artistId,
+      }),
+    );
   }
 
   isValidId(id: string): boolean {

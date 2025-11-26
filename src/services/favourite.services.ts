@@ -10,7 +10,6 @@ import { Artist } from '../types/artist.types';
 
 @Injectable()
 export class FavouriteService {
-
   constructor(
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
@@ -28,40 +27,54 @@ export class FavouriteService {
 
   findAll(): FavoritesResponse {
     return {
-      tracks: this.favourites.tracks.map(
-        (trackId: string): Track => this.trackService.findOne(trackId),
-      ).filter(Boolean),
-      albums: this.favourites.albums.map(
-        (albumId: string): Album => this.albumsService.findOne(albumId),
-      ).filter(Boolean),
-      artists: this.favourites.artists.map(
-        (artistId: string): Artist => this.artistServices.findOne(artistId),
-      ).filter(Boolean),
+      tracks: this.favourites.tracks
+        .map((trackId: string): Track => this.trackService.findOne(trackId))
+        .filter(Boolean),
+      albums: this.favourites.albums
+        .map((albumId: string): Album => this.albumsService.findOne(albumId))
+        .filter(Boolean),
+      artists: this.favourites.artists
+        .map(
+          (artistId: string): Artist => this.artistServices.findOne(artistId),
+        )
+        .filter(Boolean),
     };
   }
 
   findOneTrack(id: string): string {
-    return this.favourites.tracks.find((track: string): boolean => track === id);
+    return this.favourites.tracks.find(
+      (track: string): boolean => track === id,
+    );
   }
 
   findOneAlbum(id: string): string {
-    return this.favourites.albums.find((album: string): boolean => album === id);
+    return this.favourites.albums.find(
+      (album: string): boolean => album === id,
+    );
   }
 
   findOneArtist(id: string): string {
-    return this.favourites.artists.find((artist: string): boolean => artist === id);
+    return this.favourites.artists.find(
+      (artist: string): boolean => artist === id,
+    );
   }
 
   deleteTrack(id: string): void {
-    this.favourites.tracks = this.favourites.tracks.filter((track: string): boolean => track !== id);
+    this.favourites.tracks = this.favourites.tracks.filter(
+      (track: string): boolean => track !== id,
+    );
   }
 
   deleteAlbum(id: string): void {
-    this.favourites.albums = this.favourites.albums.filter((album: string): boolean => album !== id);
+    this.favourites.albums = this.favourites.albums.filter(
+      (album: string): boolean => album !== id,
+    );
   }
 
   deleteArtist(id: string): void {
-    this.favourites.artists = this.favourites.artists.filter((artist: string): boolean => artist !== id);
+    this.favourites.artists = this.favourites.artists.filter(
+      (artist: string): boolean => artist !== id,
+    );
   }
 
   addTrack(id: string): void {

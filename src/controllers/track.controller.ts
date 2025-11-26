@@ -14,14 +14,13 @@ import { TrackService } from '../services/track.services';
 import { Track, TrackDto } from '../types/track.types';
 import { Response } from 'express';
 
-
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Get()
   getTracks(): Track[] {
-    return this.trackService.findAll()
+    return this.trackService.findAll();
   }
 
   @Get(':id')
@@ -46,8 +45,12 @@ export class TrackController {
   createTrack(@Body() body: TrackDto): Track {
     const { name, duration, albumId, artistId } = body;
 
-    const isValidAlbumId = albumId ? this.trackService.isValidId(albumId) : true;
-    const isValidArtistId = artistId ? this.trackService.isValidId(artistId) : true;
+    const isValidAlbumId = albumId
+      ? this.trackService.isValidId(albumId)
+      : true;
+    const isValidArtistId = artistId
+      ? this.trackService.isValidId(artistId)
+      : true;
 
     if (!name || !duration) {
       throw new HttpException(
@@ -60,7 +63,7 @@ export class TrackController {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
-      )
+      );
     }
 
     return this.trackService.create(body);
@@ -84,8 +87,12 @@ export class TrackController {
 
     const { name, duration, albumId, artistId } = body;
 
-    const isValidAlbumId = albumId ? this.trackService.isValidId(albumId) : true;
-    const isValidArtistId = artistId ? this.trackService.isValidId(artistId) : true;
+    const isValidAlbumId = albumId
+      ? this.trackService.isValidId(albumId)
+      : true;
+    const isValidArtistId = artistId
+      ? this.trackService.isValidId(artistId)
+      : true;
 
     if (!name || !duration) {
       throw new HttpException(
@@ -98,7 +105,7 @@ export class TrackController {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
-      )
+      );
     }
 
     return this.trackService.update(id, body);
@@ -122,6 +129,6 @@ export class TrackController {
 
     this.trackService.delete(id);
 
-    return res.sendStatus(HttpStatus.NO_CONTENT)
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 }

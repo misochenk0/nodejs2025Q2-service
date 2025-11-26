@@ -14,14 +14,13 @@ import { ArtistServices } from '../services/artist.services';
 import { Artist, ArtistDto } from '../types/artist.types';
 import { Response } from 'express';
 
-
 @Controller('artist')
 export class ArtistController {
   constructor(private readonly artistService: ArtistServices) {}
 
   @Get()
   getArtists(): Artist[] {
-    return this.artistService.findAll()
+    return this.artistService.findAll();
   }
 
   @Get(':id')
@@ -102,6 +101,6 @@ export class ArtistController {
 
     this.artistService.delete(id);
 
-    return res.sendStatus(HttpStatus.NO_CONTENT)
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 }

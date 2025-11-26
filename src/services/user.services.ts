@@ -40,15 +40,17 @@ export class UsersService {
 
   update(id, dto: UserPasswordDto): User {
     const { newPassword } = dto;
-    this.users = this.users.map((user: User): User => id === user.id
-      ? {
-          ...user,
-          version: user.version + 1,
-          password: newPassword,
-          updatedAt: Date.now() + 1,
-        }
-      : user
-    )
+    this.users = this.users.map(
+      (user: User): User =>
+        id === user.id
+          ? {
+              ...user,
+              version: user.version + 1,
+              password: newPassword,
+              updatedAt: Date.now() + 1,
+            }
+          : user,
+    );
 
     return this.findOne(id);
   }

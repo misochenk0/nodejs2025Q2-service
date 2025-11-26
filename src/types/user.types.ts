@@ -7,12 +7,12 @@ export interface User {
   updatedAt: number; // timestamp of last update
 }
 
-export interface UserDto  {
-  login: string,
-  password: string,
+export interface UserDto {
+  login: string;
+  password: string;
 }
 
 export interface UserPasswordDto {
-  oldPassword: string,
-  newPassword: string,
+  oldPassword: string;
+  newPassword: string;
 }

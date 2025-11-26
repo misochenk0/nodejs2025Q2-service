@@ -1,5 +1,6 @@
 import {
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -17,7 +18,6 @@ import { Album } from '../types/albums.types';
 import { ArtistServices } from '../services/artist.services';
 import { Artist } from '../types/artist.types';
 
-
 @Controller('favs')
 export class FavouriteController {
   constructor(
@@ -31,7 +31,7 @@ export class FavouriteController {
   getFavourites(): FavoritesResponse {
     return this.favouriteService.findAll();
   }
-  
+
   @Post('track/:id')
   addTrackToFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
@@ -56,7 +56,7 @@ export class FavouriteController {
     }
 
     this.favouriteService.addTrack(id);
-    return res.sendStatus(HttpStatus.CREATED)
+    return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('track/:id')
   deleteTrackFromFavourites(@Param('id') id: string, @Res() res: Response) {
@@ -77,9 +77,8 @@ export class FavouriteController {
 
     this.favouriteService.deleteTrack(id);
 
-    res.sendStatus(HttpStatus.NO_CONTENT)
+    res.sendStatus(HttpStatus.NO_CONTENT);
   }
-
 
   @Post('album/:id')
   addAlbumToFavourites(@Param('id') id: string, @Res() res: Response) {
@@ -105,7 +104,7 @@ export class FavouriteController {
     }
 
     this.favouriteService.addAlbum(id);
-    return res.sendStatus(HttpStatus.CREATED)
+    return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('album/:id')
   deleteAlbumFromFavourites(@Param('id') id: string, @Res() res: Response) {
@@ -125,7 +124,7 @@ export class FavouriteController {
 
     this.favouriteService.deleteAlbum(id);
 
-    res.sendStatus(HttpStatus.NO_CONTENT)
+    res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Post('artist/:id')
@@ -152,7 +151,7 @@ export class FavouriteController {
     }
 
     this.favouriteService.addArtist(id);
-    return res.sendStatus(HttpStatus.CREATED)
+    return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('artist/:id')
   deleteArtistFromFavourites(@Param('id') id: string, @Res() res: Response) {
@@ -172,6 +171,6 @@ export class FavouriteController {
 
     this.favouriteService.deleteArtist(id);
 
-    res.sendStatus(HttpStatus.NO_CONTENT)
+    res.sendStatus(HttpStatus.NO_CONTENT);
   }
 }
