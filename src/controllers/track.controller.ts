@@ -25,7 +25,7 @@ export class TrackController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string): Track {
+  getTrackById(@Param('id') id: string): Track {
     if (!this.trackService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
