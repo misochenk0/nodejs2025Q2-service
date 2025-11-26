@@ -11,6 +11,13 @@
 git clone {repository URL}
 ```
 
+## NODE VERSION
+
+```
+Recommended version: 22.21.1
+nvm use 22.21.1
+```
+
 ## Installing NPM modules
 
 ```
