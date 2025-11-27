@@ -9,6 +9,7 @@ import { ArtistServices } from './services/artist.services';
 import { ArtistController } from './controllers/artist.controller';
 import { FavouriteService } from './services/favourite.services';
 import { FavouriteController } from './controllers/favourite.controller';
+import { DocController } from './controllers/doc.controller';
 
 @Module({
   imports: [],
@@ -17,6 +18,7 @@ import { FavouriteController } from './controllers/favourite.controller';
     TrackController,
     AlbumsController,
     ArtistController,
+    DocController,
     FavouriteController,
   ],
   providers: [
