@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: /api
+  - url: /
 
 components:
   schemas:
@@ -72,7 +72,7 @@ components:
           format: uuid
         name:
           type: string
-          example: The Show Must Go On
+          example: "The Show Must Go On"
         artistId:
           type: string
           format: uuid
@@ -139,8 +139,8 @@ paths:
                   type: string
                   description: Password
               required:
-                - user
                 - login
+                - password
       responses:
         200:
           description: Successful login.
@@ -177,7 +177,7 @@ paths:
                 password:
                   type: string
                   format: password
-                  pattern: ^[a-zA-Z0-9]{3,30}
+                  pattern: "^[a-zA-Z0-9]{3,30}$"
                   description: Password
               required:
                 - login
@@ -246,6 +246,7 @@ paths:
         required: true
         schema:
           type: string
+          format: uuid
     get:
       tags:
         - Users
@@ -334,7 +335,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: User not found
-  /tracks:
+  /track:
     get:
       tags:
         - Track
@@ -388,7 +389,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /tracks/{id}:
+  /track/{id}:
     parameters:
       - name: id
         in: path
@@ -429,7 +430,7 @@ paths:
               properties:
                 name:
                   type: string
-                  example: Bohemian Rhapsody
+                  example: "Bohemian Rhapsody"
                 artistId:
                   type: string
                   format: uuid
@@ -459,7 +460,7 @@ paths:
                     format: uuid
                   name:
                     type: string
-                    example: Bohemian Rhapsody
+                    example: "Bohemian Rhapsody"
                   artistId:
                     type: string
                     format: uuid
@@ -492,7 +493,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Track was not found.
-  /albums:
+  /album:
     get:
       tags:
         - Album
@@ -544,7 +545,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /albums/{id}:
+  /album/{id}:
     parameters:
       - name: id
         in: path
@@ -621,7 +622,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Album was not found.
-  /artists:
+  /artist:
     get:
       tags:
         - Artist
@@ -668,7 +669,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /artists/{id}:
+  /artist/{id}:
     parameters:
       - name: id
         in: path
