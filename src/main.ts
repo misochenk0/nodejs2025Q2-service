@@ -4,6 +4,10 @@ import { prisma } from './lib/prisma';
 
 async function bootstrap() {
   try {
+    const has_favorites = await prisma.favorite.findFirst();
+    if (!has_favorites) {
+      await prisma.favorite.create({ data: { artists: [], albums: [], tracks: []} });
+    }
     const app = await NestFactory.create(AppModule);
 
     const port = process.env.PORT || 4000;

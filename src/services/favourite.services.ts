@@ -7,6 +7,7 @@ import { AlbumsService } from './albums.services';
 import { ArtistServices } from './artist.services';
 import { Album } from '../types/albums.types';
 import { Artist } from '../types/artist.types';
+import { prisma } from '../lib/prisma';
 
 @Injectable()
 export class FavouriteService {
@@ -19,74 +20,74 @@ export class FavouriteService {
     private artistServices: ArtistServices,
   ) {}
 
-  private favourites: Favorites = {
-    artists: [],
-    albums: [],
-    tracks: [],
-  };
+  async getFavourites(): Promise<Favorites> {
+    return prisma.favorite.findFirst()
+  }
 
-  findAll(): FavoritesResponse {
+  async findAll(): Promise<FavoritesResponse> {
+    const favourites: Favorites = await this.getFavourites();
+    const tracks = await Promise.all(favourites.tracks
+      .map(async (trackId: string): Promise<Track> => await this.trackService.findOne(trackId)))
+    const albums = await Promise.all(favourites.albums
+      .map(async (albumId: string): Promise<Album> => await this.albumsService.findOne(albumId)))
+    const artists = await Promise.all(favourites.artists
+      .map(async (artistId: string): Promise<Artist> => await this.artistServices.findOne(artistId)))
     return {
-      tracks: this.favourites.tracks
-        .map((trackId: string): Track => this.trackService.findOne(trackId))
-        .filter(Boolean),
-      albums: this.favourites.albums
-        .map((albumId: string): Album => this.albumsService.findOne(albumId))
-        .filter(Boolean),
-      artists: this.favourites.artists
-        .map(
-          (artistId: string): Artist => this.artistServices.findOne(artistId),
-        )
-        .filter(Boolean),
+      tracks: tracks.filter(Boolean),
+      albums: albums.filter(Boolean),
+      artists: artists.filter(Boolean),
     };
   }
 
-  findOneTrack(id: string): string {
-    return this.favourites.tracks.find(
+  async findOneTrack(id: string): Promise<string> {
+    const favourites: Favorites = await this.getFavourites();
+    return favourites.tracks.find(
       (track: string): boolean => track === id,
     );
   }
 
-  findOneAlbum(id: string): string {
-    return this.favourites.albums.find(
+  async findOneAlbum(id: string): Promise<string> {
+    const favourites: Favorites = await this.getFavourites();
+    return favourites.albums.find(
       (album: string): boolean => album === id,
     );
   }
 
-  findOneArtist(id: string): string {
-    return this.favourites.artists.find(
+  async findOneArtist(id: string): Promise<string> {
+    const favourites: Favorites = await this.getFavourites();
+    return favourites.artists.find(
       (artist: string): boolean => artist === id,
     );
   }
 
-  deleteTrack(id: string): void {
-    this.favourites.tracks = this.favourites.tracks.filter(
-      (track: string): boolean => track !== id,
-    );
+  async deleteTrack(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { tracks: favourites.tracks.filter((track: string): boolean => track !== id) } })
   }
 
-  deleteAlbum(id: string): void {
-    this.favourites.albums = this.favourites.albums.filter(
-      (album: string): boolean => album !== id,
-    );
+  async deleteAlbum(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { albums: favourites.albums.filter((album: string): boolean => album !== id) } })
   }
 
-  deleteArtist(id: string): void {
-    this.favourites.artists = this.favourites.artists.filter(
-      (artist: string): boolean => artist !== id,
-    );
+  async deleteArtist(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { artists: favourites.artists.filter((artist: string): boolean => artist !== id) } })
   }
 
-  addTrack(id: string): void {
-    this.favourites.tracks.push(id);
+  async addTrack(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { tracks: [...favourites.tracks, id] } })
   }
 
-  addAlbum(id: string): void {
-    this.favourites.albums.push(id);
+  async addAlbum(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { albums: [...favourites.albums, id] } })
   }
 
-  addArtist(id: string): void {
-    this.favourites.artists.push(id);
+  async addArtist(id: string): Promise<void> {
+    const favourites: Favorites = await this.getFavourites();
+    await prisma.favorite.update({ where: { id: favourites.id }, data: { artists: [...favourites.artists, id] } })
   }
 
   private validateId(id: string): boolean {

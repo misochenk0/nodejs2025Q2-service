@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { Track, TrackDto } from '../types/track.types';
 import { v4, validate, version } from 'uuid';
+import { prisma } from '../lib/prisma';
 
 @Injectable()
 export class TrackService {
-  private tracks: Track[] = [];
 
   private validateId(id: string): boolean {
     return validate(id) && version(id) === 4;
   }
 
-  findAll(): Track[] {
-    return this.tracks;
+  async findAll(): Promise<Track[]> {
+    return prisma.track.findMany();
   }
 
-  findOne(id: string): Track {
-    return this.tracks.find((track: Track): boolean => track.id === id);
+  async findOne(id: string): Promise<Track> {
+    return prisma.track.findUnique({ where: { id } });
   }
 
   isValidId(id: string): boolean {
     return this.validateId(id);
   }
 
-  create(dto: TrackDto): Track {
+  async create(dto: TrackDto): Promise<Track> {
     const { name, duration, albumId, artistId } = dto;
 
     const newTrack: Track = {
@@ -33,40 +33,31 @@ export class TrackService {
       albumId: albumId || null,
     };
 
-    this.tracks.push(newTrack);
+    await prisma.track.create({
+      data: newTrack,
+    })
 
     return newTrack;
   }
 
-  deleteAlbumId(albumId: string): void {
-    this.tracks = this.tracks.map(
-      (track: Track): Track => ({
-        ...track,
-        albumId: track.albumId === albumId ? null : track.albumId,
-      }),
-    );
+  async deleteAlbumId(albumId: string): Promise<void> {
+    await prisma.track.updateMany({ where: { albumId }, data: {
+      albumId: null
+    }})
   }
 
-  deleteArtistId(artistId: string): void {
-    this.tracks = this.tracks.map(
-      (track: Track): Track => ({
-        ...track,
-        artistId: track.artistId === artistId ? null : track.artistId,
-      }),
-    );
+  async deleteArtistId(artistId: string): Promise<void> {
+    await prisma.track.updateMany({ where: { artistId }, data: {
+        artistId: null
+      }})
   }
 
-  update(id: string, body: TrackDto): Track {
-    this.tracks = this.tracks.map(
-      (track: Track): Track =>
-        id === track.id ? { ...track, ...body } : track,
-    );
-    return this.findOne(id);
+  async update(id: string, body: TrackDto): Promise<Track> {
+    await prisma.track.update({ where: { id }, data: body })
+    return await this.findOne(id);
   }
 
-  delete(id: string): void {
-    this.tracks = this.tracks.filter(
-      (track: Track): boolean => track.id !== id,
-    );
+  async delete(id: string): Promise<void> {
+    prisma.track.delete({ where: { id } });
   }
 }

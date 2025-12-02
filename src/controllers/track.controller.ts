@@ -19,19 +19,19 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Get()
-  getTracks(): Track[] {
-    return this.trackService.findAll();
+  async getTracks(): Promise<Track[]> {
+    return await this.trackService.findAll();
   }
 
   @Get(':id')
-  getTrackById(@Param('id') id: string): Track {
+  async getTrackById(@Param('id') id: string): Promise<Track> {
     if (!this.trackService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track: Track = this.trackService.findOne(id);
+    const track: Track = await this.trackService.findOne(id);
     if (!track) {
       throw new HttpException(
         { message: 'Track not found' },
@@ -42,7 +42,7 @@ export class TrackController {
   }
 
   @Post()
-  createTrack(@Body() body: TrackDto): Track {
+  async createTrack(@Body() body: TrackDto): Promise<Track> {
     const { name, duration, albumId, artistId } = body;
 
     const isValidAlbumId = albumId
@@ -66,18 +66,18 @@ export class TrackController {
       );
     }
 
-    return this.trackService.create(body);
+    return await this.trackService.create(body);
   }
 
   @Put(':id')
-  updateTrack(@Param('id') id: string, @Body() body: TrackDto): Track {
+  async updateTrack(@Param('id') id: string, @Body() body: TrackDto): Promise<Track> {
     if (!this.trackService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track: Track = this.trackService.findOne(id);
+    const track: Track = await this.trackService.findOne(id);
     if (!track) {
       throw new HttpException(
         { message: 'Track not found' },
@@ -108,18 +108,18 @@ export class TrackController {
       );
     }
 
-    return this.trackService.update(id, body);
+    return await this.trackService.update(id, body);
   }
 
   @Delete(':id')
-  deleteTrack(@Param('id') id: string, @Res() res: Response) {
+  async deleteTrack(@Param('id') id: string, @Res() res: Response) {
     if (!this.trackService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track: Track = this.trackService.findOne(id);
+    const track: Track = await this.trackService.findOne(id);
     if (!track) {
       throw new HttpException(
         { message: 'Track not found' },
@@ -127,7 +127,7 @@ export class TrackController {
       );
     }
 
-    this.trackService.delete(id);
+    await this.trackService.delete(id);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }

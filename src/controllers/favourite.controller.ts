@@ -28,20 +28,20 @@ export class FavouriteController {
   ) {}
 
   @Get()
-  getFavourites(): FavoritesResponse {
-    return this.favouriteService.findAll();
+  async getFavourites(): Promise<FavoritesResponse> {
+    return await this.favouriteService.findAll();
   }
 
   @Post('track/:id')
-  addTrackToFavourites(@Param('id') id: string, @Res() res: Response) {
+  async addTrackToFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track: Track = this.trackService.findOne(id);
-    const trackId: string = this.favouriteService.findOneTrack(id);
+    const track: Track = await this.trackService.findOne(id);
+    const trackId: string = await this.favouriteService.findOneTrack(id);
     if (!track) {
       throw new HttpException(
         { message: 'Track does not exist' },
@@ -55,19 +55,18 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.addTrack(id);
+    await this.favouriteService.addTrack(id);
     return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('track/:id')
-  deleteTrackFromFavourites(@Param('id') id: string, @Res() res: Response) {
+  async deleteTrackFromFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    // const track: Track = this.trackService.findOne(id);
-    const trackId: string = this.favouriteService.findOneTrack(id);
+    const trackId: string = await this.favouriteService.findOneTrack(id);
     if (!trackId) {
       throw new HttpException(
         { message: 'Track does not exist in favourites' },
@@ -75,21 +74,21 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.deleteTrack(id);
+    await this.favouriteService.deleteTrack(id);
 
     res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Post('album/:id')
-  addAlbumToFavourites(@Param('id') id: string, @Res() res: Response) {
+  async addAlbumToFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: Album = this.albumService.findOne(id);
-    const albumId: string = this.favouriteService.findOneAlbum(id);
+    const album: Album = await this.albumService.findOne(id);
+    const albumId: string = await this.favouriteService.findOneAlbum(id);
     if (!album) {
       throw new HttpException(
         { message: 'Track does not exist' },
@@ -103,18 +102,18 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.addAlbum(id);
+    await this.favouriteService.addAlbum(id);
     return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('album/:id')
-  deleteAlbumFromFavourites(@Param('id') id: string, @Res() res: Response) {
+  async deleteAlbumFromFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const albumId: string = this.favouriteService.findOneAlbum(id);
+    const albumId: string = await this.favouriteService.findOneAlbum(id);
     if (!albumId) {
       throw new HttpException(
         { message: 'Album does not exist in favourites' },
@@ -122,21 +121,21 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.deleteAlbum(id);
+    await this.favouriteService.deleteAlbum(id);
 
     res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Post('artist/:id')
-  addArtistToFavourites(@Param('id') id: string, @Res() res: Response) {
+  async addArtistToFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist: Artist = this.artistService.findOne(id);
-    const artistId: string = this.favouriteService.findOneArtist(id);
+    const artist: Artist = await this.artistService.findOne(id);
+    const artistId: string = await this.favouriteService.findOneArtist(id);
     if (!artist) {
       throw new HttpException(
         { message: 'Artist does not exist' },
@@ -150,18 +149,18 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.addArtist(id);
+    await this.favouriteService.addArtist(id);
     return res.sendStatus(HttpStatus.CREATED);
   }
   @Delete('artist/:id')
-  deleteArtistFromFavourites(@Param('id') id: string, @Res() res: Response) {
+  async deleteArtistFromFavourites(@Param('id') id: string, @Res() res: Response) {
     if (!this.favouriteService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artistId: string = this.favouriteService.findOneArtist(id);
+    const artistId: string = await this.favouriteService.findOneArtist(id);
     if (!artistId) {
       throw new HttpException(
         { message: 'Artist does not exist in favourites' },
@@ -169,7 +168,7 @@ export class FavouriteController {
       );
     }
 
-    this.favouriteService.deleteArtist(id);
+    await this.favouriteService.deleteArtist(id);
 
     res.sendStatus(HttpStatus.NO_CONTENT);
   }

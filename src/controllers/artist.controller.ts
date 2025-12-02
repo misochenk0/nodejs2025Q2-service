@@ -19,19 +19,19 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistServices) {}
 
   @Get()
-  getArtists(): Artist[] {
-    return this.artistService.findAll();
+  async getArtists(): Promise<Artist[]> {
+    return await this.artistService.findAll();
   }
 
   @Get(':id')
-  getArtistById(@Param('id') id: string): Artist {
+  async getArtistById(@Param('id') id: string): Promise<Artist> {
     if (!this.artistService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist: Artist = this.artistService.findOne(id);
+    const artist: Artist = await this.artistService.findOne(id);
     if (!artist) {
       throw new HttpException(
         { message: 'Artist not found' },
@@ -42,7 +42,7 @@ export class ArtistController {
   }
 
   @Post()
-  createArtist(@Body() body: ArtistDto): Artist {
+  async createArtist(@Body() body: ArtistDto): Promise<Artist> {
     const { name, grammy } = body;
 
     if (!name || !grammy) {
@@ -52,18 +52,18 @@ export class ArtistController {
       );
     }
 
-    return this.artistService.create(body);
+    return await this.artistService.create(body);
   }
 
   @Put(':id')
-  updateArtist(@Param('id') id: string, @Body() body: ArtistDto): Artist {
+  async updateArtist(@Param('id') id: string, @Body() body: ArtistDto): Promise<Artist> {
     if (!this.artistService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist: Artist = this.artistService.findOne(id);
+    const artist: Artist = await this.artistService.findOne(id);
     if (!artist) {
       throw new HttpException(
         { message: 'Artist not found' },
@@ -80,18 +80,18 @@ export class ArtistController {
       );
     }
 
-    return this.artistService.update(id, body);
+    return await this.artistService.update(id, body);
   }
 
   @Delete(':id')
-  deleteArtist(@Param('id') id: string, @Res() res: Response) {
+  async deleteArtist(@Param('id') id: string, @Res() res: Response) {
     if (!this.artistService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist: Artist = this.artistService.findOne(id);
+    const artist: Artist = await this.artistService.findOne(id);
     if (!artist) {
       throw new HttpException(
         { message: 'Artist not found' },
@@ -99,7 +99,7 @@ export class ArtistController {
       );
     }
 
-    this.artistService.delete(id);
+    await this.artistService.delete(id);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }

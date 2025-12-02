@@ -2,6 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Album, AlbumDto } from '../types/albums.types';
 import { v4, validate, version } from 'uuid';
 import { TrackService } from './track.services';
+import { prisma } from '../lib/prisma';
 
 @Injectable()
 export class AlbumsService {
@@ -16,15 +17,15 @@ export class AlbumsService {
     return validate(id) && version(id) === 4;
   }
 
-  findAll(): Album[] {
-    return this.albums;
+  async findAll(): Promise<Album[]> {
+    return prisma.album.findMany();
   }
 
-  findOne(id: string): Album {
-    return this.albums.find((album: Album): boolean => album.id === id);
+  async findOne(id: string): Promise<Album> {
+    return prisma.album.findUnique({ where: { id } });
   }
 
-  create(dto: AlbumDto): Album {
+  async create(dto: AlbumDto): Promise<Album> {
     const { name, year, artistId } = dto;
 
     const newAlbum: Album = {
@@ -34,34 +35,25 @@ export class AlbumsService {
       artistId: artistId || null,
     };
 
-    this.albums.push(newAlbum);
+    await prisma.album.create({ data: newAlbum })
 
     return newAlbum;
   }
 
-  update(id: string, body: AlbumDto): Album {
-    this.albums = this.albums.map(
-      (album: Album): Album =>
-        id === album.id ? { ...album, ...body } : album,
-    );
-    return this.findOne(id);
+  async update(id: string, body: AlbumDto): Promise<Album> {
+    await prisma.album.update({ where: { id }, data: body })
+    return await this.findOne(id);
   }
 
-  delete(id: string): void {
-    this.albums = this.albums.filter(
-      (album: Album): boolean => album.id !== id,
-    );
-
-    this.trackService.deleteAlbumId(id);
+  async delete(id: string): Promise<void> {
+    await prisma.album.delete({ where: { id } });
+    await this.trackService.deleteAlbumId(id);
   }
 
-  deleteArtistId(artistId: string): void {
-    this.albums = this.albums.map(
-      (album: Album): Album => ({
-        ...album,
-        artistId: album.artistId === artistId ? null : album.artistId,
-      }),
-    );
+  async deleteArtistId(artistId: string): Promise<void> {
+    await prisma.album.updateMany({ where: { artistId }, data: {
+      artistId: null
+    }})
   }
 
   isValidId(id: string): boolean {

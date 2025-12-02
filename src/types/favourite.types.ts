@@ -3,6 +3,7 @@ import { Album } from './albums.types';
 import { Track } from './track.types';
 
 export interface Favorites {
+  id: string,
   artists: string[]; // favorite artists ids
   albums: string[]; // favorite albums ids
   tracks: string[]; // favorite tracks ids

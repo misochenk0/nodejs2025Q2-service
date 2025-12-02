@@ -19,19 +19,19 @@ export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
-  getAlbum(): Album[] {
-    return this.albumsService.findAll();
+  async getAlbum(): Promise<Album[]> {
+    return await this.albumsService.findAll();
   }
 
   @Get(':id')
-  getAlbumById(@Param('id') id: string): Album {
+  async getAlbumById(@Param('id') id: string): Promise<Album> {
     if (!this.albumsService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: Album = this.albumsService.findOne(id);
+    const album: Album = await this.albumsService.findOne(id);
     if (!album) {
       throw new HttpException(
         { message: 'Album not found' },
@@ -42,7 +42,7 @@ export class AlbumsController {
   }
 
   @Post()
-  createAlbum(@Body() body: AlbumDto): Album {
+  async createAlbum(@Body() body: AlbumDto): Promise<Album> {
     const { name, year, artistId } = body;
 
     const isValidArtistId = artistId
@@ -63,18 +63,18 @@ export class AlbumsController {
       );
     }
 
-    return this.albumsService.create(body);
+    return await this.albumsService.create(body);
   }
 
   @Put(':id')
-  updateAlbum(@Param('id') id: string, @Body() body: AlbumDto): Album {
+  async updateAlbum(@Param('id') id: string, @Body() body: AlbumDto): Promise<Album> {
     if (!this.albumsService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: Album = this.albumsService.findOne(id);
+    const album: Album = await this.albumsService.findOne(id);
     if (!album) {
       throw new HttpException(
         { message: 'Album not found' },
@@ -102,18 +102,18 @@ export class AlbumsController {
       );
     }
 
-    return this.albumsService.update(id, body);
+    return await this.albumsService.update(id, body);
   }
 
   @Delete(':id')
-  deleteAlbum(@Param('id') id: string, @Res() res: Response) {
+  async deleteAlbum(@Param('id') id: string, @Res() res: Response) {
     if (!this.albumsService.isValidId(id)) {
       throw new HttpException(
         { message: 'Invalid UUID' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: Album = this.albumsService.findOne(id);
+    const album: Album = await this.albumsService.findOne(id);
     if (!album) {
       throw new HttpException(
         { message: 'Album not found' },
@@ -121,7 +121,7 @@ export class AlbumsController {
       );
     }
 
-    this.albumsService.delete(id);
+    await this.albumsService.delete(id);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }

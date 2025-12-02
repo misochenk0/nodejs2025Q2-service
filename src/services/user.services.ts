@@ -45,7 +45,6 @@ export class UsersService {
     const { newPassword } = dto;
     const user: User = await this.findOne(id);
     await prisma.user.update({ where: { id }, data: {
-        ...user,
         version: user.version + 1,
         password: String(newPassword),
         updatedAt: String(Date.now() + 1),
