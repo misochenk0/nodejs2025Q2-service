@@ -58,6 +58,6 @@ export class TrackService {
   }
 
   async delete(id: string): Promise<void> {
-    prisma.track.delete({ where: { id } });
+    await prisma.track.delete({ where: { id } });
   }
 }

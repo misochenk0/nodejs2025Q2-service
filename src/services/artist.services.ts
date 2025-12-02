@@ -51,7 +51,7 @@ export class ArtistServices {
   }
 
   async delete(id: string): Promise<void> {
-    prisma.artist.delete({ where: { id } });
+    await prisma.artist.delete({ where: { id } });
 
     await this.trackService.deleteArtistId(id);
     await this.albumsService.deleteArtistId(id);

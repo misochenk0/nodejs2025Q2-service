@@ -18,8 +18,8 @@ model User {
   login     String
   password  String?
   version   Int
-  createdAt String
-  updatedAt String
+  createdAt Int
+  updatedAt Int
 }
 
 model Track {

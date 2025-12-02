@@ -25,13 +25,15 @@ export class UsersService {
   async create(dto: UserDto): Promise<User> {
     const { login, password } = dto;
 
+    const dateNow = Date.now() / 1000;
+
     const newUser: User = {
       id: v4(),
       login,
-      password: String(password),
+      password,
       version: 1,
-      createdAt: String(Date.now()),
-      updatedAt: String(Date.now()),
+      createdAt: dateNow,
+      updatedAt: dateNow,
     };
 
     await prisma.user.create({
@@ -46,8 +48,8 @@ export class UsersService {
     const user: User = await this.findOne(id);
     await prisma.user.update({ where: { id }, data: {
         version: user.version + 1,
-        password: String(newPassword),
-        updatedAt: String(Date.now() + 1),
+        password: newPassword,
+        updatedAt: (Date.now() / 1000) + 1,
       } })
 
     return await this.findOne(id);
