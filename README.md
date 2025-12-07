@@ -30,6 +30,12 @@ npm install
 cp .env.example .env
 ```
 
+## Running app in Docker
+
+```
+npm run docker
+```
+
 ## Running application
 
 ```
