@@ -4,6 +4,7 @@ import { prisma } from './lib/prisma';
 
 async function bootstrap() {
   try {
+    await connectWithRetry(12, 2500);
     const has_favorites = await prisma.favorite.findFirst();
     if (!has_favorites) {
       await prisma.favorite.create({ data: { artists: [], albums: [], tracks: []} });
@@ -28,4 +29,21 @@ async function bootstrap() {
     process.exit(1)
   }
 }
+bootstrap();
+
+async function connectWithRetry(retries = 10, delayMs = 3000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await prisma.$connect();
+      console.log("Prisma connected to database");
+      return;
+    } catch (err: any) {
+      const msg = err?.message || err;
+      console.error(`Prisma connect attempt ${attempt} failed: ${msg}`);
+      if (attempt === retries) throw err;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+}
+
 bootstrap();
