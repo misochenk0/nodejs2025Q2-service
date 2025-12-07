@@ -1,36 +1,51 @@
-# yaml
-# file: 'docker-compose.yml'
-version: "3.8"
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: appuser
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: appdb
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: "postgres://appuser:secret@db:5432/appdb"
-      NODE_ENV: production
-      PORT: "3000"
-      MIGRATE_RETRIES: "12"
-      MIGRATE_DELAY: "2"
+    container_name: home-library-app
+    restart: on-failure
     ports:
-      - "3000:3000"
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json
+    command: [ "npm", "run", "start:dev" ]   # override image CMD to avoid watch-mode in container
     depends_on:
-      db:
-        condition: service_healthy
-    # do not bind-mount the project; it reintroduces prisma.config.ts into the container
-    volumes: []
+      - db
+    networks:
+      - home-library-network
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: ${POSTGRES_HOST}
+    environment:
+      POSTGRES_DB: '${POSTGRES_DB}'
+      POSTGRES_USER: '${POSTGRES_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-todoapp} -d ${POSTGRES_DB:-todoapp}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - home-library-network
+
+networks:
+  home-library-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_logs:
